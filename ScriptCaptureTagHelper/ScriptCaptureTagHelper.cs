@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using ScriptCaptureTagHelper.Types;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ScriptCaptureTagHelper
@@ -17,6 +19,12 @@ namespace ScriptCaptureTagHelper
         [HtmlAttributeName("capture")]
         public string Capture { get; set; }
 
+        /// <summary>
+        /// Defines an order in which a captured block should be rendered
+        /// </summary>
+        [HtmlAttributeName("priority")]
+        public int? Priority { get; set; }
+
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -26,9 +34,24 @@ namespace ScriptCaptureTagHelper
             if (string.IsNullOrEmpty(Capture))
                 return;
 
+            var attributes = context.AllAttributes
+                .Where(a => !string.Equals(a.Name, "capture", System.StringComparison.OrdinalIgnoreCase) && 
+                            !string.Equals(a.Name, "priority", System.StringComparison.OrdinalIgnoreCase))
+                .ToDictionary(k => k.Name, v => v.Value);
             var content = await output.GetChildContentAsync();
             var key = $"Script_{Capture}";
-            ViewContext.HttpContext.Items.Add(key, content.GetContent());
+            ScriptCapture capture;
+            if (ViewContext.HttpContext.Items.ContainsKey(key))
+            {
+                capture = ViewContext.HttpContext.Items[key] as ScriptCapture;
+            }
+            else
+            {
+                capture = new ScriptCapture();
+                ViewContext.HttpContext.Items.Add(key, capture);
+            }
+            var order = Priority ?? int.MaxValue;
+            capture.Add(content.GetContent(), attributes, order);
             output.SuppressOutput();
         }
     }

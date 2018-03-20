@@ -35,3 +35,26 @@ and to render this block in another file, add `render` attribute to an empty `<s
 <script render = '<UniqueID>'>
 </script>
 ```
+
+## New in version  0.2.0 
+1. Capture multiple blocks by passing the same ID.
+```html
+<script capture='Foo'>
+ console.log('Foo 1');
+</script>
+<script capture='Foo'>
+ console.log('Foo 2');
+</script>
+```
+later it can be rendered via single `script` tag:
+```html
+<script render='Foo'></script>
+```
+which will expand into two captured tags.
+2. Control the order in which captured scripts will be rendered by specifying `priority` attribute.
+    This attribute is optional, if not specified block will be rendered as the last one.
+3. `script` tag attributes are now preserved, which enables the scenario for capturing script reference:
+```html
+<script capture='InlineCapture' src='some good CDN' integrity='sha256-bla' crossorigin='anonymous'></script>
+```
+will be rendered with all attributes as it is.
