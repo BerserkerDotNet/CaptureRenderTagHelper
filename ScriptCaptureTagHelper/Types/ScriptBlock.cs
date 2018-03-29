@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace ScriptCaptureTagHelper.Types
 {
-    public class ScriptBlock
+    public struct ScriptBlock
     {
-        public ScriptBlock(string content, Dictionary<string, object> attributes, int order)
+        public ScriptBlock(TagHelperContent content, Dictionary<string, object> attributes, int order)
         {
             Content = content;
             Attributes = attributes;
             Order = order;
         }
 
-        public string Content { get; }
+        public TagHelperContent Content { get; }
         public int Order { get; }
         public Dictionary<string, object> Attributes { get; }
     }
