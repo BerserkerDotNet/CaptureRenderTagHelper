@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53D5411B-E1D2-4AE0-BC1E-3BB00042E657}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		NuGet.config = NuGet.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCaptureTagHelper.Sample", "ScriptCaptureTagHelper.Sample\ScriptCaptureTagHelper.Sample.csproj", "{C0A699A0-1BBF-4A63-8DEE-3959D1145B5A}"
