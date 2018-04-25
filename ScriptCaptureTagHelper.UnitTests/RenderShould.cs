@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Xunit;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ScriptCaptureTagHelper.UnitTests
 {
     public class RenderShould
     {
-        private readonly ViewContext _viewContext;
+        private ViewContext _viewContext;
 
-        public RenderShould()
+        [SetUp]
+        public void Setup()
         {
             _viewContext = new ViewContext
             {
@@ -21,95 +23,95 @@ namespace ScriptCaptureTagHelper.UnitTests
             };
         }
         
-        [Fact]
+        [Test]
         public async Task HaveEmptyCaptureOutput()
         {
-            var captureOutput = CreateCaptureTagWith("console.log('Foo');");
+            var content = await LayCaptureTag("console.log('Foo');");
             
-            await ProcessCaptureHelper(captureOutput);
-
-            var content = captureOutput.Content.GetContent();
-            content.Should().Be("");
+            content.Should().BeEmpty();
         }
 
-        [Theory]
-        [InlineData("console.log('Foo');")]
-        [InlineData("console.log('Bar');")]
+        [TestCase("console.log('Foo');")]
+        [TestCase("console.log('Bar');")]
         public async Task RenderCaptureOutput(string captureContent)
         {
-            var captureOutput = CreateCaptureTagWith(captureContent);
-            var renderOutput = CreateRenderTag();
-            await ProcessCaptureHelper(captureOutput);
-            
-            await ProcessRenderHelper(renderOutput);
-            
-            var content = renderOutput.Content.GetContent();
-            content.Should().Be($"{captureContent}{Environment.NewLine}");
+            await LayCaptureTag(captureContent);
+
+            var content = await LayRenderTag();
+
+            content.Should().Be($"<script>{captureContent}</script>{Environment.NewLine}");
         }
 
-        [Theory]
-        [InlineData("1", "2")]
-        [InlineData("2", "1")]
+        [TestCase("1", "2")]
+        [TestCase("2", "1")]
         public async Task RespectPriority(string script1, string script2)
         {
-            var captureOutput1 = CreateCaptureTagWith(script1);
-            var captureOutput2 = CreateCaptureTagWith(script2);
-            var renderOutput = CreateRenderTag();
-            await ProcessCaptureHelper(captureOutput1);
-            await ProcessCaptureHelper(captureOutput2);
-            
-            await ProcessRenderHelper(renderOutput);
-            
-            var content = renderOutput.Content.GetContent();
-            content.Should().Be($"{script1}{Environment.NewLine}{script2}{Environment.NewLine}");
-        }
+            await LayCaptureTag(script1);
+            await LayCaptureTag(script2);
 
-        private async Task ProcessRenderHelper(TagHelperOutput tagHelperOutput, string name = "UniqueValue")
-        {
-            var renderTag = new ScriptRenderTagHelper
-            {
-                Render = name,
-                ViewContext = _viewContext
-            };
-            
-            await renderTag.ProcessAsync(CreateHelperContext(), tagHelperOutput);
+            var content = await LayRenderTag();
+
+            content.Should().Be($"<script>{script1}</script>{Environment.NewLine}" +
+                                $"<script>{script2}</script>{Environment.NewLine}");
         }
         
-        private async Task ProcessCaptureHelper(TagHelperOutput output, string name = "UniqueValue", int? priority = null)
+        [Test]
+        public async Task CaptureScriptTagAttributes()
         {
+            await LayCaptureTag("", ("src", "some good CDN"), ("integrity", "sha256-bla"));
+            await LayCaptureTag("console.log('Foo 2');");
+            
+            var content = await LayRenderTag();
+
+            content.Should().Be($"<script integrity=\"sha256-bla\" src=\"some good CDN\"></script>{Environment.NewLine}" +
+                                $"<script>console.log('Foo 2');</script>{Environment.NewLine}");
+        }
+        
+        private Task<string> LayCaptureTag(string content) 
+            => LayCaptureTag(content, "UniqueValue", int.MaxValue);
+        
+        private Task<string> LayCaptureTag(string content, params (string name, string value)[] attrs) 
+            => LayCaptureTag(content, "UniqueValue", int.MaxValue, attrs);
+        
+        private async Task<string> LayCaptureTag(string content, string captureId = "UniqueValue", int? priority = null, params (string name, string value)[] attrs)
+        {
+            var defaultTags = new[] {new TagHelperAttribute("capture", captureId)}; 
+            var allAttrs = new TagHelperAttributeList(defaultTags.Concat(attrs.Select(a => new TagHelperAttribute(a.name, a.value))));
+            var output = new TagHelperOutput("script", allAttrs, (r, e) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(content)));
+            
             var captureTag = new ScriptCaptureTagHelper
             {
-                Capture = name,
+                Capture = captureId,
                 Priority = priority,
                 ViewContext = _viewContext
             };
             
-            await captureTag.ProcessAsync(CreateHelperContext(), output);                   
+            await captureTag.ProcessAsync(CreateHelperContext(allAttrs), output);
+
+            return output.Content.GetContent();
         }
 
-        private static TagHelperOutput CreateCaptureTagWith(string content)
-            => new TagHelperOutput("capture",
-                new TagHelperAttributeList(),
-                (result, encoder) =>
-                {
-                    var tagHelperContent = new DefaultTagHelperContent();
-                    tagHelperContent.SetHtmlContent(content);
-                    return Task.FromResult<TagHelperContent>(tagHelperContent);
-                });
+        private async Task<string> LayRenderTag(string renderId = "UniqueValue")
+        {
+            var allAttrs = new TagHelperAttributeList(new[] {new TagHelperAttribute("render", renderId)});
+            var output = new TagHelperOutput("script",
+                allAttrs,
+                (result, encoder) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(string.Empty)));
+            
+            var renderTag = new ScriptRenderTagHelper
+            {
+                Render = renderId,
+                ViewContext = _viewContext
+            };
+            
+            await renderTag.ProcessAsync(CreateHelperContext(), output);
+            
+            return output.Content.GetContent();
+        }
         
-        private static TagHelperOutput CreateRenderTag()
-            => new TagHelperOutput("render",
-                new TagHelperAttributeList(),
-                (result, encoder) =>
-                {
-                    var tagHelperContent = new DefaultTagHelperContent();
-                    tagHelperContent.SetHtmlContent(string.Empty);
-                    return Task.FromResult<TagHelperContent>(tagHelperContent);
-                });
-
-        private static TagHelperContext CreateHelperContext()
+        private static TagHelperContext CreateHelperContext(TagHelperAttributeList attrs = null)
             => new TagHelperContext(
-                new TagHelperAttributeList(),
+                attrs ?? new TagHelperAttributeList(),
                 new Dictionary<object, object>(),
                 Guid.NewGuid().ToString("N"));
     }

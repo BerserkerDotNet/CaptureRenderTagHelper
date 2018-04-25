@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using ScriptCaptureTagHelper.Types;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace ScriptCaptureTagHelper
 {
     /// <summary>
     /// Renders a script block that was stored by <see cref="ScriptCaptureTagHelper"/>
     /// </summary>
-    [HtmlTargetElement(ScriptTag, Attributes = "render")]
+    [HtmlTargetElement("script", Attributes = "render")]
     public class ScriptRenderTagHelper : TagHelper
     {
         private const string ScriptTag = "script";
@@ -39,7 +39,14 @@ namespace ScriptCaptureTagHelper
             {
                 foreach (var block in capture.Blocks.OrderBy(b => b.Order))
                 {
-                    block.Content.WriteTo(tw, NullHtmlEncoder.Default);
+                    var tagBuilder = new TagBuilder(ScriptTag)
+                    {
+                        TagRenderMode = TagRenderMode.Normal
+                    };
+                    tagBuilder.InnerHtml.AppendHtml(block.Content);
+                    tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
+                    tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
+                    
                     await tw.WriteLineAsync();
                 }
             }));
