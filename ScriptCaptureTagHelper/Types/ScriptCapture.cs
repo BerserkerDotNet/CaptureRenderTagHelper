@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace ScriptCaptureTagHelper.Types
 {
@@ -6,7 +7,7 @@ namespace ScriptCaptureTagHelper.Types
     {
         private readonly List<ScriptBlock> _scriptBlocks = new List<ScriptBlock>();
 
-        public void Add(string content, Dictionary<string, object> attributes, int order)
+        public void Add(TagHelperContent content, Dictionary<string, object> attributes, int order)
         {
             var block = new ScriptBlock(content, attributes, order);
             lock (_scriptBlocks)

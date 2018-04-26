@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using ScriptCaptureTagHelper.Types;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace ScriptCaptureTagHelper
 {
@@ -14,6 +13,8 @@ namespace ScriptCaptureTagHelper
     [HtmlTargetElement("script", Attributes = "render")]
     public class ScriptRenderTagHelper : TagHelper
     {
+        private const string ScriptTag = "script";
+
         /// <summary>
         /// Unique id of the script block
         /// </summary>
@@ -28,30 +29,27 @@ namespace ScriptCaptureTagHelper
         {
             if (string.IsNullOrEmpty(Render))
                 return;
-
+            
             var key = $"Script_{Render}";
-            if (!ViewContext.HttpContext.Items.ContainsKey(key))
+            if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
+                !(ViewContext.HttpContext.Items[key] is ScriptCapture capture))
                 return;
 
-            var capture = ViewContext.HttpContext.Items[key] as ScriptCapture;
-            if (capture == null)
-                return;
-
-            output.TagName = null;
-            var result = new StringBuilder();
-            using (var tw = new StringWriter(result))
+            output.Content.SetHtmlContent(new HelperResult(async tw =>
             {
                 foreach (var block in capture.Blocks.OrderBy(b => b.Order))
                 {
-                    var tagBuilder = new TagBuilder("script");
-                    tagBuilder.TagRenderMode = TagRenderMode.Normal;
+                    var tagBuilder = new TagBuilder(ScriptTag)
+                    {
+                        TagRenderMode = TagRenderMode.Normal
+                    };
                     tagBuilder.InnerHtml.AppendHtml(block.Content);
                     tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
                     tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
-                    tw.WriteLine();
+                    
+                    await tw.WriteLineAsync();
                 }
-            }
-            output.Content.SetHtmlContent(result.ToString());
+            }));
         }
     }
 }
