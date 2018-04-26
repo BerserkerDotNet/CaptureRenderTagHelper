@@ -10,11 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCaptureTagHelper.Sample", "ScriptCaptureTagHelper.Sample\ScriptCaptureTagHelper.Sample.csproj", "{C0A699A0-1BBF-4A63-8DEE-3959D1145B5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptCaptureTagHelper.Sample", "ScriptCaptureTagHelper.Sample\ScriptCaptureTagHelper.Sample.csproj", "{C0A699A0-1BBF-4A63-8DEE-3959D1145B5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCaptureTagHelper.UnitTests", "ScriptCaptureTagHelper.UnitTests\ScriptCaptureTagHelper.UnitTests.csproj", "{B25A8143-90B1-4354-B61F-DF5CFE17A218}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptCaptureTagHelper.UnitTests", "ScriptCaptureTagHelper.UnitTests\ScriptCaptureTagHelper.UnitTests.csproj", "{B25A8143-90B1-4354-B61F-DF5CFE17A218}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCaptureTagHelper.Benchmarks", "ScriptCaptureTagHelper.Benchmarks\ScriptCaptureTagHelper.Benchmarks.csproj", "{095C309B-28E3-4445-B31F-393730FFB93C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptCaptureTagHelper.Benchmarks", "ScriptCaptureTagHelper.Benchmarks\ScriptCaptureTagHelper.Benchmarks.csproj", "{095C309B-28E3-4445-B31F-393730FFB93C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

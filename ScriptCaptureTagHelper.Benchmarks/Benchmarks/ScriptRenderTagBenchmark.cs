@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
 {
     [MemoryDiagnoser]
-    public class ScriptTagBenchmark
+    public class ScriptRenderTagBenchmark
     {
         private ViewContext _viewContext;
-        private ScriptRenderTagHelper renderTag;
-        private TagHelperOutput renderOutput;
-        private TagHelperContext renderContext;
+        private ScriptRenderTagHelper _renderTag;
+        private TagHelperOutput _renderOutput;
+        private TagHelperContext _renderContext;
 
         [Params(1_000, 10_000, 100_000)]
         public int StringLength { get; set; }
@@ -31,11 +31,11 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
             var random = new Random();
             var randomString = new string(Enumerable.Range(0, StringLength).Select(n => (char) random.Next()).ToArray());
             var captureOutput = CreateCaptureTagWith(randomString);
-            this.renderOutput = CreateRenderTag();
-            this.renderContext = CreateHelperContext();
+            _renderOutput = CreateRenderTag();
+            _renderContext = CreateHelperContext();
             
             ProcessCaptureHelper(captureOutput, "current").GetAwaiter().GetResult();
-            this.renderTag = new ScriptRenderTagHelper
+            _renderTag = new ScriptRenderTagHelper
             {
                 Render = "current",
                 ViewContext = _viewContext
@@ -43,10 +43,10 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
         }
 
         [Benchmark]
-        public string Process()
+        public string Render()
         {
-            renderTag.ProcessAsync(renderContext, renderOutput);
-            return renderOutput.Content.GetContent();
+            _renderTag.ProcessAsync(_renderContext, _renderOutput);
+            return _renderOutput.Content.GetContent();
         }
         
         private async Task ProcessCaptureHelper(TagHelperOutput output, string name = "UniqueValue", int? priority = null)

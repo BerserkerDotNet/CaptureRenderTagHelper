@@ -7,7 +7,8 @@ namespace ScriptCaptureTagHelper.Benchmarks
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<ScriptTagBenchmark>();
+            BenchmarkRunner.Run<ScriptCaptureTagBenchmark>();
+            BenchmarkRunner.Run<ScriptRenderTagBenchmark>();
         }
     }
 }

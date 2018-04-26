@@ -50,7 +50,7 @@ later it can be rendered via single `script` tag:
 ```html
 <script render='Foo'></script>
 ```
-which will expand into a script tag that contains content from two captured tags.
+which will expand into two captured tags.
 2. Control the order in which captured scripts will be rendered by specifying `priority` attribute.
     This attribute is optional, if not specified block will be rendered as the last one.
 3. `script` tag attributes are now preserved, which enables the scenario for capturing script reference:
