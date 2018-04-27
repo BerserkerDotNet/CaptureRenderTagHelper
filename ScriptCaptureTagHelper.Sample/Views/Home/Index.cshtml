@@ -2,5 +2,18 @@
 <div>Main View</div>
 @Html.DisplayForModel()
 
-<script render="Foo">
+@*Simple render*@
+<script render="Simple">
+</script>
+
+@*Auto merge render*@
+<script render="AutoMerge" auto-merge="true">
+</script>
+
+@*Auto merge with not mergable block capture*@
+<script render="AutoWithNotMergable" auto-merge="true">
+</script>
+
+@*Explicit merge render*@
+<script render="ExplicitMerge" auto-merge="false">
 </script>

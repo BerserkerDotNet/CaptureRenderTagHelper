@@ -13,17 +13,26 @@ namespace ScriptCaptureTagHelper
     [HtmlTargetElement("script", Attributes = "capture")]
     public class ScriptCaptureTagHelper : TagHelper
     {
+        const string CaptureAttributeName = "capture";
+        const string PriorityAttributeName = "priority";
+        const string AllowMergeAttributeName = "allow-merge";
+
+        private static readonly string[] SystemAttributes = new[] { CaptureAttributeName, PriorityAttributeName, AllowMergeAttributeName };
+
         /// <summary>
         /// Unique id of the script block
         /// </summary>
-        [HtmlAttributeName("capture")]
+        [HtmlAttributeName(CaptureAttributeName)]
         public string Capture { get; set; }
 
         /// <summary>
         /// Defines an order in which a captured block should be rendered
         /// </summary>
-        [HtmlAttributeName("priority")]
+        [HtmlAttributeName(PriorityAttributeName)]
         public int? Priority { get; set; }
+
+        [HtmlAttributeName(AllowMergeAttributeName)]
+        public bool? AllowMerge { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -35,8 +44,7 @@ namespace ScriptCaptureTagHelper
                 return;
             
             var attributes = context.AllAttributes
-                .Where(a => !string.Equals(a.Name, "capture", System.StringComparison.OrdinalIgnoreCase) && 
-                            !string.Equals(a.Name, "priority", System.StringComparison.OrdinalIgnoreCase))
+                .Where(a => !SystemAttributes.Contains(a.Name))
                 .ToDictionary(k => k.Name, v => v.Value);
             var content = await output.GetChildContentAsync();
             var key = $"Script_{Capture}";
@@ -53,7 +61,7 @@ namespace ScriptCaptureTagHelper
             }
             
             var order = Priority ?? int.MaxValue;
-            capture.Add(content, attributes, order);
+            capture.Add(content, attributes, order, AllowMerge);
             output.SuppressOutput();
         }
     }

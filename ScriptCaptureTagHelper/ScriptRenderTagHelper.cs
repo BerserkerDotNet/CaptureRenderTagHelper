@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using ScriptCaptureTagHelper.Types;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ScriptCaptureTagHelper
 {
@@ -21,6 +25,9 @@ namespace ScriptCaptureTagHelper
         [HtmlAttributeName("render")]
         public string Render { get; set; }
 
+        [HtmlAttributeName("auto-merge")]
+        public bool AutoMerge { get; set; }
+
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -29,27 +36,65 @@ namespace ScriptCaptureTagHelper
         {
             if (string.IsNullOrEmpty(Render))
                 return;
-            
+
             var key = $"Script_{Render}";
             if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
                 !(ViewContext.HttpContext.Items[key] is ScriptCapture capture))
                 return;
 
-            output.Content.SetHtmlContent(new HelperResult(async tw =>
+            output.TagName = null;
+            output.Content.SetHtmlContent(new HelperResult(async tw => await RenderBlocks(tw, capture)));
+        }
+
+        private async Task RenderBlocks(TextWriter tw, ScriptCapture capture)
+        {
+            var orderedBlocks = capture.Blocks.OrderBy(b => b.Order);
+            var mergableBlocks = orderedBlocks.Where(b => 
+                ((AutoMerge && (!b.CanMerge.HasValue || b.CanMerge.Value)) ||
+                (!AutoMerge && b.CanMerge.HasValue && b.CanMerge.Value))
+                && !b.Content.IsEmptyOrWhiteSpace);
+            var otherBlocks = orderedBlocks.Except(mergableBlocks);
+
+            await RenderMergedBlocks(tw, mergableBlocks);
+            await RenderSeparateBlocks(tw, otherBlocks);
+        }
+
+        private async Task RenderSeparateBlocks(TextWriter tw, IEnumerable<ScriptBlock> blocks)
+        {
+            foreach (var block in blocks)
             {
-                foreach (var block in capture.Blocks.OrderBy(b => b.Order))
+                var tagBuilder = new TagBuilder(ScriptTag)
                 {
-                    var tagBuilder = new TagBuilder(ScriptTag)
-                    {
-                        TagRenderMode = TagRenderMode.Normal
-                    };
-                    tagBuilder.InnerHtml.AppendHtml(block.Content);
-                    tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
-                    tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
-                    
-                    await tw.WriteLineAsync();
-                }
-            }));
+                    TagRenderMode = TagRenderMode.Normal
+                };
+                tagBuilder.InnerHtml.AppendHtml(block.Content);
+                tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
+                tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
+
+                await tw.WriteLineAsync();
+            }
+        }
+
+        private async Task RenderMergedBlocks(TextWriter tw, IEnumerable<ScriptBlock> blocks)
+        {
+            if (!blocks.Any())
+                return;
+
+            var tagBuilder = new TagBuilder(ScriptTag)
+            {
+                TagRenderMode = TagRenderMode.Normal
+            };
+
+            tagBuilder.InnerHtml.Append(Environment.NewLine);
+            foreach (var block in blocks)
+            {
+                tagBuilder.InnerHtml.AppendHtml(block.Content);
+                tagBuilder.InnerHtml.Append(Environment.NewLine);
+                tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
+            }
+
+            tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
+            await tw.WriteLineAsync();
         }
     }
 }

@@ -1,9 +1,39 @@
 ﻿@model ScriptCaptureTagHelper.Sample.Models.DisplayModel
 
-<div>Display Template</div>
-<script capture="Foo">
+<div>Sample captures</div>
+
+@*Simple capture*@
+<script capture="Simple">
     console.log('Foo 1');
 </script>
-<script capture="Foo">
+<script capture="Simple">
     console.log('Foo 2');
 </script>
+<script capture="Simple" src="foo.js"></script>
+
+@*Auto merge capture*@
+<script capture="AutoMerge">
+    console.log('AutoMerge 1');
+</script>
+<script capture="AutoMerge">
+    console.log('AutoMerge 2');
+</script>
+<script capture="AutoMerge" src="AutoMerge.js"></script>
+
+@*Auto merge with not mergable block capture*@
+<script capture="AutoWithNotMergable">
+    console.log('AutoWithNotMergable 1');
+</script>
+<script capture="AutoWithNotMergable" allow-merge="false">
+    console.log('AutoWithNotMergable 2');
+</script>
+<script capture="AutoWithNotMergable" src="AutoWithNotMergable.js"></script>
+
+@*Explicit merge capture*@
+<script capture="ExplicitMerge" allow-merge="true">
+    console.log('ExplicitMerge 1');
+</script>
+<script capture="ExplicitMerge" allow-merge="true">
+    console.log('ExplicitMerge 2');
+</script>
+<script capture="ExplicitMerge" allow-merge="true" src="ExplicitMerge.js"></script>
