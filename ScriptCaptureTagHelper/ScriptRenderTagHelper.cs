@@ -25,6 +25,9 @@ namespace ScriptCaptureTagHelper
         [HtmlAttributeName("render")]
         public string Render { get; set; }
 
+        /// <summary>
+        /// Get or sets whether the renderer should attempt to merge captured blocks into one.
+        /// </summary>
         [HtmlAttributeName("auto-merge")]
         public bool AutoMerge { get; set; }
 
@@ -85,11 +88,9 @@ namespace ScriptCaptureTagHelper
                 TagRenderMode = TagRenderMode.Normal
             };
 
-            tagBuilder.InnerHtml.Append(Environment.NewLine);
             foreach (var block in blocks)
             {
                 tagBuilder.InnerHtml.AppendHtml(block.Content);
-                tagBuilder.InnerHtml.Append(Environment.NewLine);
                 tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
             }
 

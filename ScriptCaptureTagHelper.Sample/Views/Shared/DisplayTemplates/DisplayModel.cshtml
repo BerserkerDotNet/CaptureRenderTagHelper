@@ -11,6 +11,15 @@
 </script>
 <script capture="Simple" src="foo.js"></script>
 
+@*Prioritized capture*@
+<script capture="SimplePriority" priority="3">
+    console.log('SimplePriority 1');
+</script>
+<script capture="SimplePriority" priority="2">
+    console.log('SimplePriority 2');
+</script>
+<script capture="SimplePriority" priority="1" src="SimplePriority.js"></script>
+
 @*Auto merge capture*@
 <script capture="AutoMerge">
     console.log('AutoMerge 1');

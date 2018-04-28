@@ -31,6 +31,9 @@ namespace ScriptCaptureTagHelper
         [HtmlAttributeName(PriorityAttributeName)]
         public int? Priority { get; set; }
 
+        /// <summary>
+        /// Get or sets whether the captured block can be merged with others or no.
+        /// </summary>
         [HtmlAttributeName(AllowMergeAttributeName)]
         public bool? AllowMerge { get; set; }
 

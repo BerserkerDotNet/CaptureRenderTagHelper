@@ -72,11 +72,8 @@ namespace ScriptCaptureTagHelper.UnitTests
             var content = await DoRender(autoMerge: true);
 
             content.Should().Be("<script>" +
-                Environment.NewLine +
                 script1 +
-                Environment.NewLine +
                 script2 +
-                Environment.NewLine +
                 "</script>" +
                 Environment.NewLine);
         }
@@ -84,8 +81,8 @@ namespace ScriptCaptureTagHelper.UnitTests
         [Test]
         public async Task AutoMergeOnlyScriptsWithContent()
         {
-            const string script1 = "console.log('Foo')";
-            const string script2 = "console.log('Bar')";
+            const string script1 = "console.log('Foo');";
+            const string script2 = "console.log('Bar');";
 
             await DoCapture(script1);
             await DoCapture(script2);
@@ -94,16 +91,10 @@ namespace ScriptCaptureTagHelper.UnitTests
             var content = await DoRender(autoMerge: true);
 
             content.Should().Be("<script>" +
-                Environment.NewLine +
                 script1 +
-                Environment.NewLine +
                 script2 +
-                Environment.NewLine +
-                "</script>" +
-                Environment.NewLine +
-                "<script src=\"https://goodcdn\">" +
-                "</script>"+ 
-                Environment.NewLine);
+                "</script>" + Environment.NewLine +
+                "<script src=\"https://goodcdn\"></script>" + Environment.NewLine);
         }
 
         [Test]
@@ -118,11 +109,8 @@ namespace ScriptCaptureTagHelper.UnitTests
             var content = await DoRender(autoMerge: true);
 
             content.Should().Be("<script>" +
-                Environment.NewLine +
                 script2 +
-                Environment.NewLine +
                 script1 +
-                Environment.NewLine +
                 "</script>" +
                 Environment.NewLine);
         }
@@ -141,11 +129,8 @@ namespace ScriptCaptureTagHelper.UnitTests
             var content = await DoRender(autoMerge: true);
 
             content.Should().Be("<script>" +
-                Environment.NewLine +
                 script1 +
-                Environment.NewLine +
                 script3 +
-                Environment.NewLine +
                 "</script>" +
                 Environment.NewLine +
                 $"<script>{script2}</script>" +
@@ -162,13 +147,10 @@ namespace ScriptCaptureTagHelper.UnitTests
             var content = await DoRender(autoMerge: true);
 
             content.Should().Be("<script>" +
-                Environment.NewLine +
                 script1 +
-                Environment.NewLine +
                 "</script>" +
                 Environment.NewLine +
-                "<script src=\"https://goodcdn\">" +
-                "</script>" +
+                "<script src=\"https://goodcdn\"></script>" +
                 Environment.NewLine);
         }
 
@@ -184,11 +166,8 @@ namespace ScriptCaptureTagHelper.UnitTests
             var content = await DoRender(autoMerge: false);
 
             content.Should().Be("<script>" +
-                Environment.NewLine +
                 script1 +
-                Environment.NewLine +
                 script2 +
-                Environment.NewLine +
                 "</script>" +
                 Environment.NewLine);
         }
