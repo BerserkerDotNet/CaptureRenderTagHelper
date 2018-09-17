@@ -3,9 +3,9 @@
   <PropertyGroup>
     <Description>A set of Tag Helpers that can capture a script block and render it later in another place.</Description>
     <Authors>Andrii Snihyr</Authors>
-    <Version>0.3.0-$(VersionSuffix)</Version>
-    <Version Condition="$(VersionSuffix) == ''">0.3.0</Version>
-    <Version Condition="$(VersionSuffix) != ''">0.3.0-$(VersionSuffix)</Version>
+    <Version>0.3.1-$(VersionSuffix)</Version>
+    <Version Condition="$(VersionSuffix) == ''">0.3.1</Version>
+    <Version Condition="$(VersionSuffix) != ''">0.3.1-$(VersionSuffix)</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Copyright>Copyright © Andrii Snihyr</Copyright>
     <PackageLicenseUrl>https://github.com/BerserkerDotNet/ScriptCaptureTagHelper/blob/master/LICENSE</PackageLicenseUrl>
@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.1.2" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 </Project>

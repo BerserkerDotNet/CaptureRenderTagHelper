@@ -137,3 +137,30 @@ There are couple of ways to tell `ScriptRenderTagHelper` to merge captured block
     Same as with auto merge, script references do not get merged.
 
 To prevent the merge of one particular script block, set `allow-merge='false'`.
+
+### Duplicate script blocks
+From version 0.3.1 `render` tag helper will automatically detect script blocks with identical `src` attributes and will omit duplicates.
+This is useful when need to render multiple display templates or components on the same page that have a script reference.
+For example, in the following case:
+```html
+<script capture="NoDuplicate" src="Duplicate.js"></script>
+<script capture="NoDuplicate">
+    console.log('NoDuplicate 1');
+</script>
+<script capture="NoDuplicate" src="Duplicate.js"></script>
+
+/// Later in the code
+<script render="NoDuplicate">
+</script>
+```
+the output will be:
+```html
+<script src="Duplicate.js"></script>
+<script>
+    console.log('NoDuplicate 1');
+</script>```
+This can be disabled by setting `no-duplicate-source` to `false`:
+```html
+<script render="NoDuplicateDisabled" no-duplicate-source="false">
+</script>
+```

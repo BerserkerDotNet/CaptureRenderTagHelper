@@ -46,3 +46,17 @@
     console.log('ExplicitMerge 2');
 </script>
 <script capture="ExplicitMerge" allow-merge="true" src="ExplicitMerge.js"></script>
+
+@*No duplicate capture*@
+<script capture="NoDuplicate" src="Duplicate.js"></script>
+<script capture="NoDuplicate">
+    console.log('NoDuplicate 1');
+</script>
+<script capture="NoDuplicate" src="Duplicate.js"></script>
+
+@*No duplicate disabled*@
+<script capture="NoDuplicateDisabled" src="Duplicate.js"></script>
+<script capture="NoDuplicateDisabled">
+    console.log('NoDuplicateDisabled 1');
+</script>
+<script capture="NoDuplicateDisabled" src="Duplicate.js"></script>

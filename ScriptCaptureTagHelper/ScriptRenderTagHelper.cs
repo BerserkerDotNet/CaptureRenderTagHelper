@@ -31,6 +31,12 @@ namespace ScriptCaptureTagHelper
         [HtmlAttributeName("auto-merge")]
         public bool AutoMerge { get; set; }
 
+        /// <summary>
+        /// Get or sets whether the renderer should do duplicate detection on src attribute
+        /// </summary>
+        [HtmlAttributeName("no-duplicate-source")]
+        public bool NoDuplicateSource { get; set; } = true;
+
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -51,7 +57,17 @@ namespace ScriptCaptureTagHelper
 
         private async Task RenderBlocks(TextWriter tw, ScriptCapture capture)
         {
-            var orderedBlocks = capture.Blocks.OrderBy(b => b.Order);
+            const string srcAttribute = "src";
+            var blocks = capture.Blocks;
+
+            if (NoDuplicateSource)
+            {
+                blocks = blocks
+                    .GroupBy(b => b.Attributes.ContainsKey(srcAttribute) ? b.Attributes[srcAttribute] : Guid.NewGuid())
+                    .Select(b => b.First());
+            }
+
+            var orderedBlocks = blocks.OrderBy(b => b.Order);
             var mergableBlocks = orderedBlocks.Where(b => 
                 ((AutoMerge && (!b.CanMerge.HasValue || b.CanMerge.Value)) ||
                 (!AutoMerge && b.CanMerge.HasValue && b.CanMerge.Value))

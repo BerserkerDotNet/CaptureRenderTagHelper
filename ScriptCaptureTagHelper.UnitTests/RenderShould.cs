@@ -208,6 +208,44 @@ namespace ScriptCaptureTagHelper.UnitTests
                                 $"<script>console.log('Foo 2');</script>{Environment.NewLine}");
         }
 
+        [Test]
+        public async Task DoNotRenderDuplicate()
+        {
+            var script = "console.log('Foo')";
+            await DoCapture(string.Empty, attrs: ("src", "https://goodcdn/foo.js"));
+            await DoCapture(script);
+            await DoCapture(string.Empty, attrs: ("src", "https://goodcdn/foo.js"));
+
+            var content = await DoRender();
+
+            content.Should().Be("<script src=\"https://goodcdn/foo.js\"></script>" +
+                Environment.NewLine +
+                "<script>" +
+                script +
+                "</script>" +
+                Environment.NewLine);
+        }
+
+        [Test]
+        public async Task RenderDuplicateIfDuplicateDetectionDisabled()
+        {
+            var script = "console.log('Foo')";
+            await DoCapture(string.Empty, attrs: ("src", "https://goodcdn/foo.js"));
+            await DoCapture(script);
+            await DoCapture(string.Empty, attrs: ("src", "https://goodcdn/foo.js"));
+
+            var content = await DoRender(noDuplicateSource: false);
+
+            content.Should().Be("<script src=\"https://goodcdn/foo.js\"></script>" +
+                Environment.NewLine +
+                "<script>" +
+                script +
+                "</script>" +
+                Environment.NewLine +
+                "<script src=\"https://goodcdn/foo.js\"></script>" +
+                Environment.NewLine);
+        }
+
         private Task<string> DoCapture(string content)
             => DoCapture(content, "UniqueValue", int.MaxValue, null);
 
@@ -239,13 +277,13 @@ namespace ScriptCaptureTagHelper.UnitTests
             return output.Content.GetContent();
         }
 
-        private async Task<string> DoRender(string renderId = "UniqueValue", bool autoMerge = false)
+        private async Task<string> DoRender(string renderId = "UniqueValue", bool autoMerge = false, bool noDuplicateSource = true)
         {
-            var tag = await DoRenderTag(renderId, autoMerge);
+            var tag = await DoRenderTag(renderId, autoMerge, noDuplicateSource);
             return tag.Content.GetContent();
         }
 
-        private async Task<TagHelperOutput> DoRenderTag(string renderId = "UniqueValue", bool autoMerge = false)
+        private async Task<TagHelperOutput> DoRenderTag(string renderId = "UniqueValue", bool autoMerge = false, bool noDuplicateSource = true)
         {
             var allAttrs = new TagHelperAttributeList(new[] { new TagHelperAttribute("render", renderId) });
             var output = new TagHelperOutput("script",
@@ -256,6 +294,7 @@ namespace ScriptCaptureTagHelper.UnitTests
             {
                 Render = renderId,
                 AutoMerge = autoMerge,
+                NoDuplicateSource = noDuplicateSource,
                 ViewContext = _viewContext
             };
 
