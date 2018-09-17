@@ -1,5 +1,6 @@
 # ScriptCaptureTagHelper
 [![Build status](https://ci.appveyor.com/api/projects/status/vwivx49nk3ofn0p7/branch/master?svg=true)](https://ci.appveyor.com/project/BerserkerDotNet/scriptcapturetaghelper/branch/master)
+[![Nuget](https://buildstats.info/nuget/ScriptCaptureTagHelper?v=0.3.1)](https://www.nuget.org/packages/ScriptCaptureTagHelper)
 
 A set of Tag Helpers that can capture a script block and render it later in another place.
 
