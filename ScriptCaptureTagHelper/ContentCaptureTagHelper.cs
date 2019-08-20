@@ -1,22 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using ScriptCaptureTagHelper.Types;
+using ContentCaptureTagHelper.Types;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ScriptCaptureTagHelper
+namespace ContentCaptureTagHelper
 {
     /// <summary>
     /// Captures a script block for future rendering and suppresses output
     /// </summary>
-    [HtmlTargetElement("script", Attributes = "capture")]
-    [HtmlTargetElement("section", Attributes = "capture")]
-    public class ScriptCaptureTagHelper : TagHelper
+    [HtmlTargetElement(Attributes = "capture")]
+    public class ContentCaptureTagHelper : TagHelper
     {
         const string CaptureAttributeName = "capture";
         const string PriorityAttributeName = "priority";
         const string AllowMergeAttributeName = "allow-merge";
+        const string NoTagAttributeName = "nooutputtag";
 
         private static readonly string[] SystemAttributes = new[] { CaptureAttributeName, PriorityAttributeName, AllowMergeAttributeName };
 
@@ -37,6 +37,12 @@ namespace ScriptCaptureTagHelper
         /// </summary>
         [HtmlAttributeName(AllowMergeAttributeName)]
         public bool? AllowMerge { get; set; }
+        
+        /// <summary>
+        /// Get or sets whether the captured block will be output with or without an enclosing tag.
+        /// </summary>
+        [HtmlAttributeName(NoTagAttributeName)]
+        public bool? NoTag { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -52,20 +58,20 @@ namespace ScriptCaptureTagHelper
                 .ToDictionary(k => k.Name, v => v.Value);
             var content = await output.GetChildContentAsync();
             var key = $"Script_{Capture}";
-            ScriptCapture capture = null;
+            ContentCapture capture = null;
             if (ViewContext.HttpContext.Items.ContainsKey(key))
             {
-                capture = ViewContext.HttpContext.Items[key] as ScriptCapture;
+                capture = ViewContext.HttpContext.Items[key] as ContentCapture;
             }
             
             if (capture == null)
             {
-                capture = new ScriptCapture();
+                capture = new ContentCapture();
                 ViewContext.HttpContext.Items.Add(key, capture);
             }
             
             var order = Priority ?? int.MaxValue;
-            capture.Add(content, attributes, output.TagName, order, AllowMerge);
+            capture.Add(content, attributes, output.TagName, NoTag.GetValueOrDefault(false), order, AllowMerge);
             output.SuppressOutput();
         }
     }

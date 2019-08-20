@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace ScriptCaptureTagHelper.Types
+namespace ContentCaptureTagHelper.Types
 {
-    public struct ScriptBlock
+    public struct ContentBlock
     {
 
-        public ScriptBlock(TagHelperContent content, Dictionary<string, object> attributes, string tag, bool noTag, int order, bool? canMerge)
+        public ContentBlock(TagHelperContent content, Dictionary<string, object> attributes, string tag, bool noTag, int order, bool? canMerge)
         {
             Content = content;
             Attributes = attributes;

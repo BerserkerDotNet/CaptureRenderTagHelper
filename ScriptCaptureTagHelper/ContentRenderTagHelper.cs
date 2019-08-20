@@ -2,22 +2,22 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using ScriptCaptureTagHelper.Types;
+using ContentCaptureTagHelper.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ScriptCaptureTagHelper
+namespace ContentCaptureTagHelper
 {
     /// <summary>
-    /// Renders a script block that was stored by <see cref="ScriptCaptureTagHelper"/>
+    /// Renders a content block that was stored by <see cref="ContentCaptureTagHelper"/>
     /// </summary>
-    [HtmlTargetElement("script", Attributes = "render")]
-    public class ScriptRenderTagHelper : TagHelper
+    [HtmlTargetElement(Attributes = "render")]
+    public class ContentRenderTagHelper : TagHelper
     {
-        private const string ScriptTag = "script";
+        private const string DefaultTag = "script";
 
         /// <summary>
         /// Unique id of the script block
@@ -48,14 +48,14 @@ namespace ScriptCaptureTagHelper
 
             var key = $"Script_{Render}";
             if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
-                !(ViewContext.HttpContext.Items[key] is ScriptCapture capture))
+                !(ViewContext.HttpContext.Items[key] is ContentCapture capture))
                 return;
 
             output.TagName = null;
             output.Content.SetHtmlContent(new HelperResult(async tw => await RenderBlocks(tw, capture)));
         }
 
-        private async Task RenderBlocks(TextWriter tw, ScriptCapture capture)
+        private async Task RenderBlocks(TextWriter tw, ContentCapture capture)
         {
             const string srcAttribute = "src";
             var blocks = capture.Blocks;
@@ -78,13 +78,13 @@ namespace ScriptCaptureTagHelper
             await RenderSeparateBlocks(tw, otherBlocks);
         }
 
-        private async Task RenderSeparateBlocks(TextWriter tw, IEnumerable<ScriptBlock> blocks)
+        private async Task RenderSeparateBlocks(TextWriter tw, IEnumerable<ContentBlock> blocks)
         {
             foreach (var block in blocks)
             {
                 if (!block.NoTag)
                 {
-                    var tagBuilder = new TagBuilder(block.Tag ?? ScriptTag)
+                    var tagBuilder = new TagBuilder(block.Tag ?? DefaultTag)
                     {
                         TagRenderMode = TagRenderMode.Normal
                     };
@@ -100,12 +100,12 @@ namespace ScriptCaptureTagHelper
             }
         }
 
-        private async Task RenderMergedBlocks(TextWriter tw, IEnumerable<ScriptBlock> blocks)
+        private async Task RenderMergedBlocks(TextWriter tw, IEnumerable<ContentBlock> blocks)
         {
             if (!blocks.Any())
                 return;
 
-            var tagBuilder = new TagBuilder(blocks.First().Tag ?? ScriptTag)
+            var tagBuilder = new TagBuilder(blocks.First().Tag ?? DefaultTag)
             {
                 TagRenderMode = TagRenderMode.Normal
             };

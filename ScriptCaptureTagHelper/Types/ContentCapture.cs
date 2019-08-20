@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace ScriptCaptureTagHelper.Types
+namespace ContentCaptureTagHelper.Types
 {
-    public class ScriptCapture
+    public class ContentCapture
     {
-        private readonly List<ScriptBlock> _scriptBlocks = new List<ScriptBlock>();
+        private readonly List<ContentBlock> _scriptBlocks = new List<ContentBlock>();
 
-        public void Add(TagHelperContent content, Dictionary<string, object> attributes, string tag, int order, bool? canMerge = null)
+        public void Add(TagHelperContent content, Dictionary<string, object> attributes, string tag, bool noTag, int order, bool? canMerge = null)
         {
-            var block = new ScriptBlock(content, attributes, tag, order, canMerge);
+            var block = new ContentBlock(content, attributes, tag, noTag, order, canMerge);
             lock (_scriptBlocks)
             {
                 _scriptBlocks.Add(block);
             }
         }
 
-        public IEnumerable<ScriptBlock> Blocks => _scriptBlocks;
+        public IEnumerable<ContentBlock> Blocks => _scriptBlocks;
     }
 }
