@@ -13,7 +13,7 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
     public class ScriptCaptureTagBenchmark
     {
         private ViewContext _viewContext;
-        private ScriptCaptureTagHelper _captureTag;
+        private ContentCaptureTagHelper.ContentCaptureTagHelper _captureTag;
         private TagHelperOutput _captureOutput;
         private TagHelperContext _captureContext;
 
@@ -32,7 +32,7 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
             var randomString = new string(Enumerable.Range(0, StringLength).Select(n => (char)random.Next()).ToArray());
             _captureOutput = CreateCaptureTagWith(randomString);
             _captureContext = CreateHelperContext();
-            _captureTag = new ScriptCaptureTagHelper
+            _captureTag = new ContentCaptureTagHelper.ContentCaptureTagHelper
             {
                 Capture = "UniqueValue",
                 Priority = null,

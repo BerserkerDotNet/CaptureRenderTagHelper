@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27512.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptCaptureTagHelper", "ScriptCaptureTagHelper\ScriptCaptureTagHelper.csproj", "{C4498188-CB12-436B-B16F-4FEEE77440D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContentCaptureTagHelper", "ScriptCaptureTagHelper\ContentCaptureTagHelper.csproj", "{C4498188-CB12-436B-B16F-4FEEE77440D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53D5411B-E1D2-4AE0-BC1E-3BB00042E657}"
 	ProjectSection(SolutionItems) = preProject

@@ -13,7 +13,7 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
     public class ScriptRenderTagBenchmark
     {
         private ViewContext _viewContext;
-        private ScriptRenderTagHelper _renderTag;
+        private ContentCaptureTagHelper.ContentRenderTagHelper _renderTag;
         private TagHelperOutput _renderOutput;
         private TagHelperContext _renderContext;
 
@@ -35,7 +35,7 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
             _renderContext = CreateHelperContext();
             
             ProcessCaptureHelper(captureOutput, "current").GetAwaiter().GetResult();
-            _renderTag = new ScriptRenderTagHelper
+            _renderTag = new ContentCaptureTagHelper.ContentRenderTagHelper
             {
                 Render = "current",
                 ViewContext = _viewContext
@@ -51,7 +51,7 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
         
         private async Task ProcessCaptureHelper(TagHelperOutput output, string name = "UniqueValue", int? priority = null)
         {
-            var captureTag = new ScriptCaptureTagHelper
+            var captureTag = new ContentCaptureTagHelper.ContentCaptureTagHelper
             {
                 Capture = name,
                 Priority = priority,

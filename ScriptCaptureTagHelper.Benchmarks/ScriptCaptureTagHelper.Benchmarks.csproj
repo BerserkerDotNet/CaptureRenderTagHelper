@@ -7,6 +7,6 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.10.13" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ScriptCaptureTagHelper\ScriptCaptureTagHelper.csproj" />
+    <ProjectReference Include="..\ScriptCaptureTagHelper\ContentCaptureTagHelper.csproj" />
   </ItemGroup>
 </Project>
