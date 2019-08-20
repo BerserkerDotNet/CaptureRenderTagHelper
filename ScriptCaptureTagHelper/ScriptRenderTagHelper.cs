@@ -68,7 +68,7 @@ namespace ScriptCaptureTagHelper
             }
 
             var orderedBlocks = blocks.OrderBy(b => b.Order);
-            var mergableBlocks = orderedBlocks.Where(b => 
+            var mergableBlocks = orderedBlocks.Where(b =>
                 ((AutoMerge && (!b.CanMerge.HasValue || b.CanMerge.Value)) ||
                 (!AutoMerge && b.CanMerge.HasValue && b.CanMerge.Value))
                 && !b.Content.IsEmptyOrWhiteSpace);
@@ -82,13 +82,19 @@ namespace ScriptCaptureTagHelper
         {
             foreach (var block in blocks)
             {
-                var tagBuilder = new TagBuilder(ScriptTag)
+                if (!block.NoTag)
                 {
-                    TagRenderMode = TagRenderMode.Normal
-                };
-                tagBuilder.InnerHtml.AppendHtml(block.Content);
-                tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
-                tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
+                    var tagBuilder = new TagBuilder(block.Tag ?? ScriptTag)
+                    {
+                        TagRenderMode = TagRenderMode.Normal
+                    };
+                    tagBuilder.InnerHtml.AppendHtml(block.Content);
+                    tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
+                    tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
+                } else
+                {
+                    block.Content.WriteTo(tw, NullHtmlEncoder.Default);
+                }
 
                 await tw.WriteLineAsync();
             }
@@ -99,7 +105,7 @@ namespace ScriptCaptureTagHelper
             if (!blocks.Any())
                 return;
 
-            var tagBuilder = new TagBuilder(ScriptTag)
+            var tagBuilder = new TagBuilder(blocks.First().Tag ?? ScriptTag)
             {
                 TagRenderMode = TagRenderMode.Normal
             };

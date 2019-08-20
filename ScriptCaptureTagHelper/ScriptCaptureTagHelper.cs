@@ -11,6 +11,7 @@ namespace ScriptCaptureTagHelper
     /// Captures a script block for future rendering and suppresses output
     /// </summary>
     [HtmlTargetElement("script", Attributes = "capture")]
+    [HtmlTargetElement("section", Attributes = "capture")]
     public class ScriptCaptureTagHelper : TagHelper
     {
         const string CaptureAttributeName = "capture";
@@ -64,7 +65,7 @@ namespace ScriptCaptureTagHelper
             }
             
             var order = Priority ?? int.MaxValue;
-            capture.Add(content, attributes, order, AllowMerge);
+            capture.Add(content, attributes, output.TagName, order, AllowMerge);
             output.SuppressOutput();
         }
     }
