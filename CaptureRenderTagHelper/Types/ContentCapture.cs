@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace CaptureRenderTagHelper.Types
 {
-    public class CaptureRender
+    public class ContentCapture
     {
         private readonly List<ContentBlock> _scriptBlocks = new List<ContentBlock>();
 

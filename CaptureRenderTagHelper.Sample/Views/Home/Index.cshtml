@@ -1,0 +1,31 @@
+﻿@model CaptureRenderTagHelper.Sample.Models.ViewModel
+<div>Main View</div>
+@Html.DisplayForModel()
+
+@*Simple render*@
+<script render="Simple">
+</script>
+
+@*Prioritized capture*@
+<script render="SimplePriority">
+</script>
+
+@*Auto merge render*@
+<script render="AutoMerge" auto-merge="true">
+</script>
+
+@*Auto merge with not mergable block capture*@
+<script render="AutoWithNotMergable" auto-merge="true">
+</script>
+
+@*Explicit merge render*@
+<script render="ExplicitMerge" auto-merge="false">
+</script>
+
+@*No duplicate capture*@
+<script render="NoDuplicate">
+</script>
+
+@*No duplicate disabled*@
+<script render="NoDuplicateDisabled" no-duplicate-source="false">
+</script>

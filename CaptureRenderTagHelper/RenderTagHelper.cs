@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using CaptureRenderTagHelper.Types;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using CaptureRenderTagHelper.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,10 +32,10 @@ namespace CaptureRenderTagHelper
         public bool AutoMerge { get; set; }
 
         /// <summary>
-        /// Get or sets whether the renderer should do duplicate detection on src attribute
+        /// Get or sets whether the renderer should do duplicate detection on an attribute, if the value parses as "true" it will do duplicate detection on src or id as defaults
         /// </summary>
         [HtmlAttributeName("no-duplicate-source")]
-        public bool NoDuplicateSource { get; set; } = true;
+        public string NoDuplicateSource { get; set; } = "src"; //This makes it fully adhering to previous behaviour.
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -48,24 +48,30 @@ namespace CaptureRenderTagHelper
 
             var key = $"Script_{Render}";
             if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
-                !(ViewContext.HttpContext.Items[key] is CaptureRender capture))
+                !(ViewContext.HttpContext.Items[key] is ContentCapture capture))
                 return;
 
             output.TagName = null;
             output.Content.SetHtmlContent(new HelperResult(async tw => await RenderBlocks(tw, capture)));
         }
 
-        private async Task RenderBlocks(TextWriter tw, CaptureRender capture)
+        private async Task RenderBlocks(TextWriter tw, ContentCapture capture)
         {
             const string srcAttribute = "src";
+            const string idAttribute = "id";
             var blocks = capture.Blocks;
 
-            if (NoDuplicateSource)
-            {
+            if (!string.IsNullOrWhiteSpace(NoDuplicateSource) && bool.TryParse(NoDuplicateSource, out var hasBoolNoDuplicateSource) && hasBoolNoDuplicateSource)
                 blocks = blocks
-                    .GroupBy(b => b.Attributes.ContainsKey(srcAttribute) ? b.Attributes[srcAttribute] : Guid.NewGuid())
+                    .GroupBy(b => b.Attributes.ContainsKey(srcAttribute) ? b.Attributes[srcAttribute] :
+                                  b.Attributes.ContainsKey(idAttribute) ? b.Attributes[idAttribute] : Guid.NewGuid())
                     .Select(b => b.First());
-            }
+
+            else if (!string.IsNullOrWhiteSpace(NoDuplicateSource))
+                blocks = blocks
+                    .GroupBy(b => b.Attributes.ContainsKey(NoDuplicateSource) ? b.Attributes[NoDuplicateSource] : Guid.NewGuid())
+                    .Select(b => b.First());
+
 
             var orderedBlocks = blocks.OrderBy(b => b.Order);
             var mergableBlocks = orderedBlocks.Where(b =>
@@ -91,7 +97,8 @@ namespace CaptureRenderTagHelper
                     tagBuilder.InnerHtml.AppendHtml(block.Content);
                     tagBuilder.MergeAttributes(block.Attributes, replaceExisting: true);
                     tagBuilder.WriteTo(tw, NullHtmlEncoder.Default);
-                } else
+                }
+                else
                 {
                     block.Content.WriteTo(tw, NullHtmlEncoder.Default);
                 }

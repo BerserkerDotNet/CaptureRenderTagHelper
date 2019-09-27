@@ -58,15 +58,15 @@ namespace CaptureRenderTagHelper
                 .ToDictionary(k => k.Name, v => v.Value);
             var content = await output.GetChildContentAsync();
             var key = $"Script_{Capture}";
-            CaptureRender capture = null;
+            ContentCapture capture = null;
             if (ViewContext.HttpContext.Items.ContainsKey(key))
             {
-                capture = ViewContext.HttpContext.Items[key] as CaptureRender;
+                capture = ViewContext.HttpContext.Items[key] as ContentCapture;
             }
             
             if (capture == null)
             {
-                capture = new CaptureRender();
+                capture = new ContentCapture();
                 ViewContext.HttpContext.Items.Add(key, capture);
             }
             

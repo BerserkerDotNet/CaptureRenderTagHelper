@@ -9,7 +9,7 @@ namespace CaptureRenderTagHelper.Extensions
         {            
             var key = $"Script_{name}";
             if (htmlHelper.ViewContext.HttpContext.Items.ContainsKey(key) &&
-                (htmlHelper.ViewContext.HttpContext.Items[key] is CaptureRender))
+                (htmlHelper.ViewContext.HttpContext.Items[key] is ContentCapture))
                 return true;
 
             return false;
