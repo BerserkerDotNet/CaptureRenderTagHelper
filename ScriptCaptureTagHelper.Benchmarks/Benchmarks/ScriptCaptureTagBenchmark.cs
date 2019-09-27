@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
+namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
 {
     [MemoryDiagnoser]
-    public class ScriptCaptureTagBenchmark
+    public class CaptureRenderTagBenchmark
     {
         private ViewContext _viewContext;
-        private ContentCaptureTagHelper.ContentCaptureTagHelper _captureTag;
+        private CaptureTagHelper _captureTag;
         private TagHelperOutput _captureOutput;
         private TagHelperContext _captureContext;
 
@@ -32,7 +32,7 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
             var randomString = new string(Enumerable.Range(0, StringLength).Select(n => (char)random.Next()).ToArray());
             _captureOutput = CreateCaptureTagWith(randomString);
             _captureContext = CreateHelperContext();
-            _captureTag = new ContentCaptureTagHelper.ContentCaptureTagHelper
+            _captureTag = new CaptureTagHelper
             {
                 Capture = "UniqueValue",
                 Priority = null,

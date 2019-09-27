@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace ContentCaptureTagHelper.Types
+namespace CaptureRenderTagHelper.Types
 {
-    public class ContentCapture
+    public class CaptureRender
     {
         private readonly List<ContentBlock> _scriptBlocks = new List<ContentBlock>();
 

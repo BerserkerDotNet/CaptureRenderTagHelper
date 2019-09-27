@@ -1,4 +1,4 @@
-﻿namespace ScriptCaptureTagHelper.Sample.Models
+﻿namespace CaptureRenderTagHelper.Sample.Models
 {
     public class DisplayModel : ViewModel
     {

@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NUnit.Framework;
-using ContentCaptureTagHelper.Types;
+using CaptureRenderTagHelper.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ScriptCaptureTagHelper.UnitTests
+namespace CaptureRenderTagHelper.UnitTests
 {
     public class RenderShould
     {
@@ -53,8 +53,8 @@ namespace ScriptCaptureTagHelper.UnitTests
 
             _viewContext.HttpContext.Items.Keys.Should().HaveCount(2);
 
-            var bucket1 = _viewContext.HttpContext.Items[$"Script_{Bucket1Key}"] as ContentCapture;
-            var bucket2 = _viewContext.HttpContext.Items[$"Script_{Bucket2Key}"] as ContentCapture;
+            var bucket1 = _viewContext.HttpContext.Items[$"Script_{Bucket1Key}"] as CaptureRender;
+            var bucket2 = _viewContext.HttpContext.Items[$"Script_{Bucket2Key}"] as CaptureRender;
 
             bucket1.Blocks.Should().HaveCount(2);
             bucket2.Blocks.Should().HaveCount(1);
@@ -264,7 +264,7 @@ namespace ScriptCaptureTagHelper.UnitTests
             var allAttrs = new TagHelperAttributeList(defaultTags.Concat(attrs.Select(a => new TagHelperAttribute(a.name, a.value))));
             var output = new TagHelperOutput("script", allAttrs, (r, e) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(content)));
             
-            var captureTag = new ContentCaptureTagHelper.ContentCaptureTagHelper
+            var captureTag = new CaptureTagHelper
             {
                 Capture = captureId,
                 Priority = priority,
@@ -290,7 +290,7 @@ namespace ScriptCaptureTagHelper.UnitTests
                 allAttrs,
                 (result, encoder) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(string.Empty)));
 
-            var renderTag = new ContentCaptureTagHelper.ContentRenderTagHelper
+            var renderTag = new RenderTagHelper
             {
                 Render = renderId,
                 AutoMerge = autoMerge,

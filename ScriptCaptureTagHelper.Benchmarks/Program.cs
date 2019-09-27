@@ -1,13 +1,13 @@
 ﻿using BenchmarkDotNet.Running;
-using ScriptCaptureTagHelper.Benchmarks.Benchmarks;
+using CaptureRenderTagHelper.Benchmarks.Benchmarks;
 
-namespace ScriptCaptureTagHelper.Benchmarks
+namespace CaptureRenderTagHelper.Benchmarks
 {
     class Program
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<ScriptCaptureTagBenchmark>();
+            BenchmarkRunner.Run<CaptureRenderTagBenchmark>();
             BenchmarkRunner.Run<ScriptRenderTagBenchmark>();
         }
     }

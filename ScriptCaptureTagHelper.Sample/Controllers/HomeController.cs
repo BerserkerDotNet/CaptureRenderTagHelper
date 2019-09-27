@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ScriptCaptureTagHelper.Sample.Models;
+using CaptureRenderTagHelper.Sample.Models;
 
-namespace ScriptCaptureTagHelper.Sample.Controllers
+namespace CaptureRenderTagHelper.Sample.Controllers
 {
     public class HomeController : Controller
     {

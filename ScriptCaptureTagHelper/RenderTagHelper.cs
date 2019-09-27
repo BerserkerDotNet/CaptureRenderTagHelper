@@ -2,20 +2,20 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using ContentCaptureTagHelper.Types;
+using CaptureRenderTagHelper.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ContentCaptureTagHelper
+namespace CaptureRenderTagHelper
 {
     /// <summary>
-    /// Renders a content block that was stored by <see cref="ContentCaptureTagHelper"/>
+    /// Renders a content block that was stored by <see cref="CaptureTagHelper"/>
     /// </summary>
     [HtmlTargetElement(Attributes = "render")]
-    public class ContentRenderTagHelper : TagHelper
+    public class RenderTagHelper : TagHelper
     {
         private const string DefaultTag = "script";
 
@@ -48,14 +48,14 @@ namespace ContentCaptureTagHelper
 
             var key = $"Script_{Render}";
             if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
-                !(ViewContext.HttpContext.Items[key] is ContentCapture capture))
+                !(ViewContext.HttpContext.Items[key] is CaptureRender capture))
                 return;
 
             output.TagName = null;
             output.Content.SetHtmlContent(new HelperResult(async tw => await RenderBlocks(tw, capture)));
         }
 
-        private async Task RenderBlocks(TextWriter tw, ContentCapture capture)
+        private async Task RenderBlocks(TextWriter tw, CaptureRender capture)
         {
             const string srcAttribute = "src";
             var blocks = capture.Blocks;

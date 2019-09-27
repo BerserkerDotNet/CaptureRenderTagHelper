@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace ScriptCaptureTagHelper.Sample
+namespace CaptureRenderTagHelper.Sample
 {
     public class Program
     {

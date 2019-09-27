@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace ContentCaptureTagHelper.Types
+namespace CaptureRenderTagHelper.Types
 {
     public struct ContentBlock
     {

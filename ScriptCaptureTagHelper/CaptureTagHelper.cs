@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using ContentCaptureTagHelper.Types;
+using CaptureRenderTagHelper.Types;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ContentCaptureTagHelper
+namespace CaptureRenderTagHelper
 {
     /// <summary>
     /// Captures a script block for future rendering and suppresses output
     /// </summary>
     [HtmlTargetElement(Attributes = "capture")]
-    public class ContentCaptureTagHelper : TagHelper
+    public class CaptureTagHelper : TagHelper
     {
         const string CaptureAttributeName = "capture";
         const string PriorityAttributeName = "priority";
@@ -58,15 +58,15 @@ namespace ContentCaptureTagHelper
                 .ToDictionary(k => k.Name, v => v.Value);
             var content = await output.GetChildContentAsync();
             var key = $"Script_{Capture}";
-            ContentCapture capture = null;
+            CaptureRender capture = null;
             if (ViewContext.HttpContext.Items.ContainsKey(key))
             {
-                capture = ViewContext.HttpContext.Items[key] as ContentCapture;
+                capture = ViewContext.HttpContext.Items[key] as CaptureRender;
             }
             
             if (capture == null)
             {
-                capture = new ContentCapture();
+                capture = new CaptureRender();
                 ViewContext.HttpContext.Items.Add(key, capture);
             }
             

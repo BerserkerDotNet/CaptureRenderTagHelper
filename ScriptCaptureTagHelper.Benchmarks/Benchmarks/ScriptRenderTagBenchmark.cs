@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
+namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
 {
     [MemoryDiagnoser]
     public class ScriptRenderTagBenchmark
     {
         private ViewContext _viewContext;
-        private ContentCaptureTagHelper.ContentRenderTagHelper _renderTag;
+        private RenderTagHelper _renderTag;
         private TagHelperOutput _renderOutput;
         private TagHelperContext _renderContext;
 
@@ -35,8 +35,9 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
             _renderContext = CreateHelperContext();
             
             ProcessCaptureHelper(captureOutput, "current").GetAwaiter().GetResult();
-            _renderTag = new ContentCaptureTagHelper.ContentRenderTagHelper
+            _renderTag = new RenderTagHelper
             {
+                
                 Render = "current",
                 ViewContext = _viewContext
             };
@@ -45,13 +46,13 @@ namespace ScriptCaptureTagHelper.Benchmarks.Benchmarks
         [Benchmark]
         public string Render()
         {
-            _renderTag.ProcessAsync(_renderContext, _renderOutput);
+            _renderTag.ProcessAsync(_renderContext, _renderOutput).Wait();
             return _renderOutput.Content.GetContent();
         }
         
         private async Task ProcessCaptureHelper(TagHelperOutput output, string name = "UniqueValue", int? priority = null)
         {
-            var captureTag = new ContentCaptureTagHelper.ContentCaptureTagHelper
+            var captureTag = new CaptureTagHelper
             {
                 Capture = name,
                 Priority = priority,

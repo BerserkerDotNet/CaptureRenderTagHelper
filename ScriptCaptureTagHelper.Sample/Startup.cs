@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ScriptCaptureTagHelper.Sample
+namespace CaptureRenderTagHelper.Sample
 {
     public class Startup
     {

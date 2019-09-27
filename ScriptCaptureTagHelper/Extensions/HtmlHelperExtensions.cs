@@ -1,7 +1,7 @@
-﻿using ContentCaptureTagHelper.Types;
+﻿using CaptureRenderTagHelper.Types;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace ContentCaptureTagHelper.Extensions
+namespace CaptureRenderTagHelper.Extensions
 {
     public static class HtmlHelperExtensions
     {
@@ -9,7 +9,7 @@ namespace ContentCaptureTagHelper.Extensions
         {            
             var key = $"Script_{name}";
             if (htmlHelper.ViewContext.HttpContext.Items.ContainsKey(key) &&
-                (htmlHelper.ViewContext.HttpContext.Items[key] is ContentCapture))
+                (htmlHelper.ViewContext.HttpContext.Items[key] is CaptureRender))
                 return true;
 
             return false;
