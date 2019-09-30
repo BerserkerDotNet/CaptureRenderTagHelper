@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
 {
     [MemoryDiagnoser]
-    public class ScriptRenderTagBenchmark
+    public class RenderTagBenchmark
     {
         private ViewContext _viewContext;
         private RenderTagHelper _renderTag;

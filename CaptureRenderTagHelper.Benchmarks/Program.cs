@@ -7,8 +7,8 @@ namespace CaptureRenderTagHelper.Benchmarks
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<CaptureRenderTagBenchmark>();
-            BenchmarkRunner.Run<ScriptRenderTagBenchmark>();
+            BenchmarkRunner.Run<CaptureTagBenchmark>();
+            BenchmarkRunner.Run<RenderTagBenchmark>();
         }
     }
 }

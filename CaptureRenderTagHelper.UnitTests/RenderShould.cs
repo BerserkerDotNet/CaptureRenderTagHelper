@@ -53,8 +53,8 @@ namespace CaptureRenderTagHelper.UnitTests
 
             _viewContext.HttpContext.Items.Keys.Should().HaveCount(2);
 
-            var bucket1 = _viewContext.HttpContext.Items[$"Script_{Bucket1Key}"] as CaptureRender;
-            var bucket2 = _viewContext.HttpContext.Items[$"Script_{Bucket2Key}"] as CaptureRender;
+            var bucket1 = _viewContext.HttpContext.Items[$"Element_{Bucket1Key}"] as ContentCapture;
+            var bucket2 = _viewContext.HttpContext.Items[$"Element_{Bucket2Key}"] as ContentCapture;
 
             bucket1.Blocks.Should().HaveCount(2);
             bucket2.Blocks.Should().HaveCount(1);
@@ -234,7 +234,7 @@ namespace CaptureRenderTagHelper.UnitTests
             await DoCapture(script);
             await DoCapture(string.Empty, attrs: ("src", "https://goodcdn/foo.js"));
 
-            var content = await DoRender(noDuplicateSource: false);
+            var content = await DoRender(noDuplicateSource: "false");
 
             content.Should().Be("<script src=\"https://goodcdn/foo.js\"></script>" +
                 Environment.NewLine +
@@ -277,13 +277,13 @@ namespace CaptureRenderTagHelper.UnitTests
             return output.Content.GetContent();
         }
 
-        private async Task<string> DoRender(string renderId = "UniqueValue", bool autoMerge = false, bool noDuplicateSource = true)
+        private async Task<string> DoRender(string renderId = "UniqueValue", bool autoMerge = false, string noDuplicateSource = "src")
         {
             var tag = await DoRenderTag(renderId, autoMerge, noDuplicateSource);
             return tag.Content.GetContent();
         }
 
-        private async Task<TagHelperOutput> DoRenderTag(string renderId = "UniqueValue", bool autoMerge = false, bool noDuplicateSource = true)
+        private async Task<TagHelperOutput> DoRenderTag(string renderId = "UniqueValue", bool autoMerge = false, string noDuplicateSource = "src")
         {
             var allAttrs = new TagHelperAttributeList(new[] { new TagHelperAttribute("render", renderId) });
             var output = new TagHelperOutput("script",

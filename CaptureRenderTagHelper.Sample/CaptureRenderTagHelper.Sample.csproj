@@ -9,6 +9,6 @@
     <Folder Include="Views\Shared" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ScriptCaptureTagHelper\CaptureRenderTagHelper.csproj" />
+    <ProjectReference Include="..\CaptureRenderTagHelper\CaptureRenderTagHelper.csproj" />
   </ItemGroup>
 </Project>

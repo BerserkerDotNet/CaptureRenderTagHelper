@@ -57,7 +57,7 @@ namespace CaptureRenderTagHelper
                 .Where(a => !SystemAttributes.Contains(a.Name))
                 .ToDictionary(k => k.Name, v => v.Value);
             var content = await output.GetChildContentAsync();
-            var key = $"Script_{Capture}";
+            var key = $"Element_{Capture}";
             ContentCapture capture = null;
             if (ViewContext.HttpContext.Items.ContainsKey(key))
             {

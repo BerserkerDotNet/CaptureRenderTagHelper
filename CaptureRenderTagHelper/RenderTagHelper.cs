@@ -46,7 +46,7 @@ namespace CaptureRenderTagHelper
             if (string.IsNullOrEmpty(Render))
                 return;
 
-            var key = $"Script_{Render}";
+            var key = $"Element_{Render}";
             if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
                 !(ViewContext.HttpContext.Items[key] is ContentCapture capture))
                 return;

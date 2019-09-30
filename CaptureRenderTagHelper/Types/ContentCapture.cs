@@ -5,17 +5,17 @@ namespace CaptureRenderTagHelper.Types
 {
     public class ContentCapture
     {
-        private readonly List<ContentBlock> _scriptBlocks = new List<ContentBlock>();
+        private readonly List<ContentBlock> _contentBlocks = new List<ContentBlock>();
 
         public void Add(TagHelperContent content, Dictionary<string, object> attributes, string tag, bool noTag, int order, bool? canMerge = null)
         {
             var block = new ContentBlock(content, attributes, tag, noTag, order, canMerge);
-            lock (_scriptBlocks)
+            lock (_contentBlocks)
             {
-                _scriptBlocks.Add(block);
+                _contentBlocks.Add(block);
             }
         }
 
-        public IEnumerable<ContentBlock> Blocks => _scriptBlocks;
+        public IEnumerable<ContentBlock> Blocks => _contentBlocks;
     }
 }
