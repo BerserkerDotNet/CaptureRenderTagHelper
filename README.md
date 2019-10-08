@@ -1,17 +1,17 @@
-# ScriptCaptureTagHelper
-[![Build status](https://ci.appveyor.com/api/projects/status/vwivx49nk3ofn0p7/branch/master?svg=true)](https://ci.appveyor.com/project/BerserkerDotNet/scriptcapturetaghelper/branch/master)
-[![Nuget](https://buildstats.info/nuget/ScriptCaptureTagHelper?v=0.3.1)](https://www.nuget.org/packages/ScriptCaptureTagHelper)
+# CaptureRenderTagHelper
+[![Build status](https://ci.appveyor.com/api/projects/status/vwivx49nk3ofn0p7/branch/master?svg=true)](https://ci.appveyor.com/project/BerserkerDotNet/CaptureRendertaghelper/branch/master)
+[![Nuget](https://buildstats.info/nuget/CaptureRenderTagHelper?v=0.3.1)](https://www.nuget.org/packages/CaptureRenderTagHelper)
 
 A set of Tag Helpers that can capture a script block and render it later in another place.
 
 ## Installing
-1. Add a reference to the [package](https://www.nuget.org/packages/ScriptCaptureTagHelper):
+1. Add a reference to the [package](https://www.nuget.org/packages/CaptureRenderTagHelper):
     ```powershell
-    PM> Install-Package ScriptCaptureTagHelper
+    PM> Install-Package CaptureRenderTagHelper
     ```
     or
     ```cmd
-    MyGreatProject> dotnet add package ScriptCaptureTagHelper
+    MyGreatProject> dotnet add package CaptureRenderTagHelper
     ```
 1. Restore packages:
     ```cmd
@@ -19,7 +19,7 @@ A set of Tag Helpers that can capture a script block and render it later in anot
     ```
 1. Register the Tag Helpers in your application's `_ViewImports.cshtml` file:
     ```
-    @addTagHelper *, ScriptCaptureTagHelper
+    @addTagHelper *, CaptureRenderTagHelper
     ```
     
 ## Usage & Features:
@@ -159,7 +159,8 @@ the output will be:
 <script src="Duplicate.js"></script>
 <script>
     console.log('NoDuplicate 1');
-</script>```
+</script>
+```
 This can be disabled by setting `no-duplicate-source` to `false`:
 ```html
 <script render="NoDuplicateDisabled" no-duplicate-source="false">
