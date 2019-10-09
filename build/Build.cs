@@ -77,6 +77,8 @@ class Build : NukeBuild
             DotNetPack(s => s
                 .SetProject(Solution.GetProject("CaptureRenderTagHelper"))
                 .SetConfiguration(Configuration)
+                .EnableNoBuild()
+                .EnableNoRestore()
                 .SetOutputDirectory(ArtifactsDirectory));
         });
 

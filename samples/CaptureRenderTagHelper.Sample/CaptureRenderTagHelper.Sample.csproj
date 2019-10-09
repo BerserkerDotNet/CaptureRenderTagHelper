@@ -14,10 +14,7 @@
     <CodeAnalysisRuleSet>..\..\StyleCop.ruleset</CodeAnalysisRuleSet>
     <WarningsAsErrors />
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  
+
   <ItemGroup>
     <Folder Include="Views\Shared" />
   </ItemGroup>
