@@ -7,6 +7,8 @@ namespace CaptureRenderTagHelper.Types
     {
         private readonly List<ContentBlock> _contentBlocks = new List<ContentBlock>();
 
+        public IEnumerable<ContentBlock> Blocks => _contentBlocks;
+
         public void Add(TagHelperContent content, Dictionary<string, object> attributes, string tag, bool noTag, int order, bool? canMerge = null)
         {
             var block = new ContentBlock(content, attributes, tag, noTag, order, canMerge);
@@ -15,7 +17,5 @@ namespace CaptureRenderTagHelper.Types
                 _contentBlocks.Add(block);
             }
         }
-
-        public IEnumerable<ContentBlock> Blocks => _contentBlocks;
     }
 }

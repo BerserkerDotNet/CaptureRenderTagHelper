@@ -3,12 +3,9 @@
   <PropertyGroup>
     <Description>A set of Tag Helpers that can capture a script block and render it later in another place.</Description>
     <Authors>Andrii Snihyr</Authors>
-    <Version>0.3.1-$(VersionSuffix)</Version>
-    <Version Condition="$(VersionSuffix) == ''">0.3.1</Version>
-    <Version Condition="$(VersionSuffix) != ''">0.3.1-$(VersionSuffix)</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Copyright>Copyright © Andrii Snihyr</Copyright>
-    <PackageLicenseUrl>https://github.com/BerserkerDotNet/ScriptCaptureTagHelper/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/BerserkerDotNet/ScriptCaptureTagHelper/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/BerserkerDotNet/ScriptCaptureTagHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/BerserkerDotNet/ScriptCaptureTagHelper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -16,8 +13,35 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <CodeAnalysisRuleSet>..\..\StyleCop.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\..\StyleCop.ruleset</CodeAnalysisRuleSet>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\StyleCop.ruleset" Link="StyleCop.ruleset" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.1.2" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.26">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 </Project>

@@ -1,18 +1,18 @@
-﻿using CaptureRenderTagHelper.Types;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CaptureRenderTagHelper.Types;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace CaptureRenderTagHelper
 {
     /// <summary>
-    /// Renders a content block that was stored by <see cref="CaptureTagHelper"/>
+    /// Renders a content block that was stored by <see cref="CaptureTagHelper"/>.
     /// </summary>
     [HtmlTargetElement(Attributes = "render")]
     public class RenderTagHelper : TagHelper
@@ -20,7 +20,7 @@ namespace CaptureRenderTagHelper
         private const string DefaultTag = "script";
 
         /// <summary>
-        /// Unique id of the script block
+        /// Unique id of the script block.
         /// </summary>
         [HtmlAttributeName("render")]
         public string Render { get; set; }
@@ -32,10 +32,10 @@ namespace CaptureRenderTagHelper
         public bool AutoMerge { get; set; }
 
         /// <summary>
-        /// Get or sets whether the renderer should do duplicate detection on an attribute, if the value parses as "true" it will do duplicate detection on src or id as defaults
+        /// Get or sets whether the renderer should do duplicate detection on an attribute, if the value parses as "true" it will do duplicate detection on src or id as defaults.
         /// </summary>
         [HtmlAttributeName("no-duplicate-source")]
-        public string NoDuplicateSource { get; set; } = "src"; //This makes it fully adhering to previous behaviour.
+        public string NoDuplicateSource { get; set; } = "src"; // This makes it fully adhering to previous behaviour.
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -44,12 +44,16 @@ namespace CaptureRenderTagHelper
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (string.IsNullOrEmpty(Render))
+            {
                 return;
+            }
 
             var key = $"Element_{Render}";
             if (!ViewContext.HttpContext.Items.ContainsKey(key) ||
                 !(ViewContext.HttpContext.Items[key] is ContentCapture capture))
+            {
                 return;
+            }
 
             output.TagName = null;
             output.Content.SetHtmlContent(new HelperResult(async tw => await RenderBlocks(tw, capture)));
@@ -62,16 +66,18 @@ namespace CaptureRenderTagHelper
             var blocks = capture.Blocks;
 
             if (!string.IsNullOrWhiteSpace(NoDuplicateSource) && bool.TryParse(NoDuplicateSource, out var hasBoolNoDuplicateSource) && hasBoolNoDuplicateSource)
+            {
                 blocks = blocks
                     .GroupBy(b => b.Attributes.ContainsKey(srcAttribute) ? b.Attributes[srcAttribute] :
                                   b.Attributes.ContainsKey(idAttribute) ? b.Attributes[idAttribute] : Guid.NewGuid())
                     .Select(b => b.First());
-
+            }
             else if (!string.IsNullOrWhiteSpace(NoDuplicateSource))
+            {
                 blocks = blocks
                     .GroupBy(b => b.Attributes.ContainsKey(NoDuplicateSource) ? b.Attributes[NoDuplicateSource] : Guid.NewGuid())
                     .Select(b => b.First());
-
+            }
 
             var orderedBlocks = blocks.OrderBy(b => b.Order);
             var mergableBlocks = orderedBlocks.Where(b =>
@@ -110,7 +116,9 @@ namespace CaptureRenderTagHelper
         private async Task RenderMergedBlocks(TextWriter tw, IEnumerable<ContentBlock> blocks)
         {
             if (!blocks.Any())
+            {
                 return;
+            }
 
             var tagBuilder = new TagBuilder(blocks.First().Tag ?? DefaultTag)
             {

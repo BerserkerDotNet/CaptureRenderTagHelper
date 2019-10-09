@@ -47,8 +47,9 @@ namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
             return _captureOutput.Content.GetContent();
         }
 
-        private static TagHelperOutput CreateCaptureTagWith(string content) 
-            => new TagHelperOutput("capture",
+        private static TagHelperOutput CreateCaptureTagWith(string content)
+            => new TagHelperOutput(
+                "capture",
                 new TagHelperAttributeList(),
                 (result, encoder) =>
                 {

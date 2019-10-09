@@ -27,17 +27,16 @@ namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
             {
                 HttpContext = new DefaultHttpContext()
             };
-            
+
             var random = new Random();
-            var randomString = new string(Enumerable.Range(0, StringLength).Select(n => (char) random.Next()).ToArray());
+            var randomString = new string(Enumerable.Range(0, StringLength).Select(n => (char)random.Next()).ToArray());
             var captureOutput = CreateCaptureTagWith(randomString);
             _renderOutput = CreateRenderTag();
             _renderContext = CreateHelperContext();
-            
+
             ProcessCaptureHelper(captureOutput, "current").GetAwaiter().GetResult();
             _renderTag = new RenderTagHelper
             {
-                
                 Render = "current",
                 ViewContext = _viewContext
             };
@@ -49,21 +48,10 @@ namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
             _renderTag.ProcessAsync(_renderContext, _renderOutput).Wait();
             return _renderOutput.Content.GetContent();
         }
-        
-        private async Task ProcessCaptureHelper(TagHelperOutput output, string name = "UniqueValue", int? priority = null)
-        {
-            var captureTag = new CaptureTagHelper
-            {
-                Capture = name,
-                Priority = priority,
-                ViewContext = _viewContext
-            };
-            
-            await captureTag.ProcessAsync(CreateHelperContext(), output);                   
-        }
-        
+
         private static TagHelperOutput CreateCaptureTagWith(string content)
-            => new TagHelperOutput("capture",
+            => new TagHelperOutput(
+                "capture",
                 new TagHelperAttributeList(),
                 (result, encoder) =>
                 {
@@ -71,9 +59,10 @@ namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
                     tagHelperContent.SetHtmlContent(content);
                     return Task.FromResult<TagHelperContent>(tagHelperContent);
                 });
-        
+
         private static TagHelperOutput CreateRenderTag()
-            => new TagHelperOutput("render",
+            => new TagHelperOutput(
+                "render",
                 new TagHelperAttributeList(),
                 (result, encoder) =>
                 {
@@ -87,5 +76,17 @@ namespace CaptureRenderTagHelper.Benchmarks.Benchmarks
                 new TagHelperAttributeList(),
                 new Dictionary<object, object>(),
                 Guid.NewGuid().ToString("N"));
+
+        private async Task ProcessCaptureHelper(TagHelperOutput output, string name = "UniqueValue", int? priority = null)
+        {
+            var captureTag = new CaptureTagHelper
+            {
+                Capture = name,
+                Priority = priority,
+                ViewContext = _viewContext
+            };
+
+            await captureTag.ProcessAsync(CreateHelperContext(), output);
+        }
     }
 }

@@ -1,13 +1,13 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CaptureRenderTagHelper.Types;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NUnit.Framework;
-using CaptureRenderTagHelper.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CaptureRenderTagHelper.UnitTests
 {
@@ -23,12 +23,12 @@ namespace CaptureRenderTagHelper.UnitTests
                 HttpContext = new DefaultHttpContext()
             };
         }
-        
+
         [Test]
         public async Task HaveEmptyCaptureOutput()
         {
             var content = await DoCapture("console.log('Foo');");
-            
+
             content.Should().BeEmpty();
         }
 
@@ -195,13 +195,13 @@ namespace CaptureRenderTagHelper.UnitTests
             content.Should().Be($"<script>{script2}</script>{Environment.NewLine}" +
                                 $"<script>{script1}</script>{Environment.NewLine}");
         }
-        
+
         [Test]
         public async Task CaptureScriptTagAttributes()
         {
-            await DoCapture("", ("src", "some good CDN"), ("integrity", "sha256-bla"));
+            await DoCapture(string.Empty, ("src", "some good CDN"), ("integrity", "sha256-bla"));
             await DoCapture("console.log('Foo 2');");
-            
+
             var content = await DoRender();
 
             content.Should().Be($"<script integrity=\"sha256-bla\" src=\"some good CDN\"></script>{Environment.NewLine}" +
@@ -246,6 +246,11 @@ namespace CaptureRenderTagHelper.UnitTests
                 Environment.NewLine);
         }
 
+        private static TagHelperContext CreateHelperContext(TagHelperAttributeList attrs = null) => new TagHelperContext(
+            attrs ?? new TagHelperAttributeList(),
+            new Dictionary<object, object>(),
+            Guid.NewGuid().ToString("N"));
+
         private Task<string> DoCapture(string content)
             => DoCapture(content, "UniqueValue", int.MaxValue, null);
 
@@ -255,15 +260,15 @@ namespace CaptureRenderTagHelper.UnitTests
         private Task<string> DoCapture(string content, params (string name, string value)[] attrs)
             => DoCapture(content, "UniqueValue", int.MaxValue, null, attrs);
 
-        private Task<string> DoCapture(string content, bool? allowMerge = null, params (string name, string value)[] attrs) 
+        private Task<string> DoCapture(string content, bool? allowMerge = null, params (string name, string value)[] attrs)
             => DoCapture(content, "UniqueValue", int.MaxValue, allowMerge, attrs);
-        
+
         private async Task<string> DoCapture(string content, string captureId = "UniqueValue", int? priority = null, bool? allowMerge = null, params (string name, string value)[] attrs)
         {
             var defaultTags = new[] { new TagHelperAttribute("capture", captureId) };
             var allAttrs = new TagHelperAttributeList(defaultTags.Concat(attrs.Select(a => new TagHelperAttribute(a.name, a.value))));
             var output = new TagHelperOutput("script", allAttrs, (r, e) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(content)));
-            
+
             var captureTag = new CaptureTagHelper
             {
                 Capture = captureId,
@@ -271,7 +276,7 @@ namespace CaptureRenderTagHelper.UnitTests
                 AllowMerge = allowMerge,
                 ViewContext = _viewContext
             };
-            
+
             await captureTag.ProcessAsync(CreateHelperContext(allAttrs), output);
 
             return output.Content.GetContent();
@@ -286,7 +291,8 @@ namespace CaptureRenderTagHelper.UnitTests
         private async Task<TagHelperOutput> DoRenderTag(string renderId = "UniqueValue", bool autoMerge = false, string noDuplicateSource = "src")
         {
             var allAttrs = new TagHelperAttributeList(new[] { new TagHelperAttribute("render", renderId) });
-            var output = new TagHelperOutput("script",
+            var output = new TagHelperOutput(
+                "script",
                 allAttrs,
                 (result, encoder) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(string.Empty)));
 
@@ -302,11 +308,5 @@ namespace CaptureRenderTagHelper.UnitTests
 
             return output;
         }
-
-        private static TagHelperContext CreateHelperContext(TagHelperAttributeList attrs = null)
-            => new TagHelperContext(
-                attrs ?? new TagHelperAttributeList(),
-                new Dictionary<object, object>(),
-                Guid.NewGuid().ToString("N"));
     }
 }
