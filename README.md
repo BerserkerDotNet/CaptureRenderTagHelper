@@ -1,5 +1,5 @@
 # CaptureRenderTagHelper
-[![Build status](https://ci.appveyor.com/api/projects/status/vwivx49nk3ofn0p7/branch/master?svg=true)](https://ci.appveyor.com/project/BerserkerDotNet/CaptureRendertaghelper/branch/master)
+[![Build Status](https://berserkerdotnet.visualstudio.com/GitHubProjects/_apis/build/status/BerserkerDotNet.CaptureRenderTagHelper?branchName=master)](https://berserkerdotnet.visualstudio.com/GitHubProjects/_build/latest?definitionId=9&branchName=master)
 [![Nuget](https://buildstats.info/nuget/CaptureRenderTagHelper?v=1.0.0)](https://www.nuget.org/packages/CaptureRenderTagHelper)
 
 A set of Tag Helpers that can capture an html element and render it later in another place.
