@@ -86,19 +86,4 @@ class Build : NukeBuild
                 .EnableIncludeSymbols()
                 .SetOutputDirectory(ArtifactsDirectory));
         });
-
-    Target PublishNuGet => _ => _
-        .DependsOn(Package)
-        .Requires(() => ApiKey)
-        .Executes(() =>
-        {
-            var packages = ArtifactsDirectory.GlobFiles("*.nupkg");
-
-            DotNetNuGetPush(s => s
-                    .SetSource(Source)
-                    .SetApiKey(ApiKey)
-                    .CombineWith(packages, (cs, v) => cs.SetTargetPath(v)),
-                degreeOfParallelism: 5,
-                completeOnFailure: true);
-        });
 }
