@@ -32,10 +32,16 @@ namespace CaptureRenderTagHelper
         public bool AutoMerge { get; set; }
 
         /// <summary>
+        /// Get or sets whether the renderer should do duplicate detection on a tag.
+        /// </summary>
+        [HtmlAttributeName("no-duplicates")]
+        public bool NoDuplicates { get; set; } = true;
+
+        /// <summary>
         /// Get or sets whether the renderer should do duplicate detection on an attribute, if the value parses as "true" it will do duplicate detection on src or id as defaults.
         /// </summary>
         [HtmlAttributeName("no-duplicate-source")]
-        public string NoDuplicateSource { get; set; } = "src"; // This makes it fully adhering to previous behaviour.
+        public string NoDuplicateSource { get; set; } = "src";
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -61,18 +67,9 @@ namespace CaptureRenderTagHelper
 
         private async Task RenderBlocks(TextWriter tw, ContentCapture capture)
         {
-            const string srcAttribute = "src";
-            const string idAttribute = "id";
             var blocks = capture.Blocks;
 
-            if (!string.IsNullOrWhiteSpace(NoDuplicateSource) && bool.TryParse(NoDuplicateSource, out var hasBoolNoDuplicateSource) && hasBoolNoDuplicateSource)
-            {
-                blocks = blocks
-                    .GroupBy(b => b.Attributes.ContainsKey(srcAttribute) ? b.Attributes[srcAttribute] :
-                                  b.Attributes.ContainsKey(idAttribute) ? b.Attributes[idAttribute] : Guid.NewGuid())
-                    .Select(b => b.First());
-            }
-            else if (!string.IsNullOrWhiteSpace(NoDuplicateSource))
+            if (NoDuplicates)
             {
                 blocks = blocks
                     .GroupBy(b => b.Attributes.ContainsKey(NoDuplicateSource) ? b.Attributes[NoDuplicateSource] : Guid.NewGuid())
