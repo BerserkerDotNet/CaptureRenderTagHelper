@@ -6,5 +6,12 @@ pool:
 
 steps:
 - task: PowerShell@2
+  displayName: 'Build & Package'
   inputs:
     filePath: 'build.ps1'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
+  inputs:
+    PathtoPublish: 'artifacts'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
