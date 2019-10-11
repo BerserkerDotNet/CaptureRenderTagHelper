@@ -1,8 +1,10 @@
 # CaptureRenderTagHelper
 [![Build status](https://ci.appveyor.com/api/projects/status/vwivx49nk3ofn0p7/branch/master?svg=true)](https://ci.appveyor.com/project/BerserkerDotNet/CaptureRendertaghelper/branch/master)
-[![Nuget](https://buildstats.info/nuget/CaptureRenderTagHelper?v=0.3.1)](https://www.nuget.org/packages/CaptureRenderTagHelper)
+[![Nuget](https://buildstats.info/nuget/CaptureRenderTagHelper?v=1.0.0)](https://www.nuget.org/packages/CaptureRenderTagHelper)
 
-A set of Tag Helpers that can capture a script block and render it later in another place.
+A set of Tag Helpers that can capture an html element and render it later in another place.
+
+> Renamed from ScriptCaptureTagHelper
 
 ## Installing
 1. Add a reference to the [package](https://www.nuget.org/packages/CaptureRenderTagHelper):
@@ -23,19 +25,19 @@ A set of Tag Helpers that can capture a script block and render it later in anot
     ```
     
 ## Usage & Features:
-Razor [sections](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout#sections) does not work in partial views or in display templates. This TagHelper will capture a `script` block in the partial view or in the display template and render it later on the page.
+Razor [sections](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout#sections) does not work in partial views or in display templates. This TagHelper will capture any html tag in the partial view or in the display template and render it later on the page.
 
 ### Simple capture
-To capture a script block add `capture` attribute to a `<script>` tag
+To capture a tag, add `capture` attribute to it
 ```html
-<script capture='<UniqueID>'>
-  ... JS code to capture
-</script>
+<div capture='<UniqueID>'>
+  ... markup
+</div>
 ```
-and to render this block, add `render` attribute to an empty `<script>` block in another file, specifying the same `UniqueID`:
+and to render this block, add `render` attribute to an empty html element in another file, specifying the same `UniqueID`:
 ```html
-<script render='<UniqueID>'>
-</script>
+<div render='<UniqueID>'>
+</div>
 ```
 ### Capturing multiple blocks
 
@@ -161,8 +163,24 @@ the output will be:
     console.log('NoDuplicate 1');
 </script>
 ```
-This can be disabled by setting `no-duplicate-source` to `false`:
+This can be disabled by setting `no-duplicates` to `false`:
 ```html
-<script render="NoDuplicateDisabled" no-duplicate-source="false">
+<script render="NoDuplicateDisabled" no-duplicates="false">
 </script>
+```
+
+To specify which attribute to use when detecting duplicates, specify `no-duplicate-source`. Default value is `src`
+
+```html
+<!--Capture-->
+<div capture="NoDuplicatesCustom" id="TheDiv">
+    <h1>Div 1</h1>
+</div>
+
+<div capture="NoDuplicatesCustom" id="TheDiv">
+    <h1>Div 2</h1>
+</div>
+
+<!--Render-->
+<div render="NoDuplicatesCustom" no-duplicate-source="id"></div>
 ```

@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+
+  <PropertyGroup>
+    <Description>A set of Tag Helpers that can capture aan html tag and render it later in another place.</Description>
+    <Authors>Andrii Snihyr</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Copyright>Copyright © Andrii Snihyr</Copyright>
+    <PackageLicense>https://github.com/BerserkerDotNet/CaptureRenderTagHelper/blob/master/LICENSE</PackageLicense>
+    <PackageProjectUrl>https://github.com/BerserkerDotNet/CaptureRenderTagHelper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/BerserkerDotNet/CaptureRenderTagHelper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>aspnetcore, taghelpers, razor, cshtml</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <CodeAnalysisRuleSet>..\..\StyleCop.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\..\StyleCop.ruleset</CodeAnalysisRuleSet>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\StyleCop.ruleset" Link="StyleCop.ruleset" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.26">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+  </ItemGroup>
+</Project>
