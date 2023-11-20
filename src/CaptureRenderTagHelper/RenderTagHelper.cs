@@ -72,7 +72,7 @@ namespace CaptureRenderTagHelper
             if (NoDuplicates)
             {
                 blocks = blocks
-                    .GroupBy(b => b.Attributes.ContainsKey(NoDuplicateSource) ? b.Attributes[NoDuplicateSource] : Guid.NewGuid())
+                    .GroupBy(b => b.Attributes.ContainsKey(NoDuplicateSource) ? b.Attributes[NoDuplicateSource].ToString() : Guid.NewGuid().ToString())
                     .Select(b => b.First());
             }
 
