@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CaptureRenderTagHelper.Types;
 using FluentAssertions;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -275,7 +276,7 @@ namespace CaptureRenderTagHelper.UnitTests
         private async Task<string> DoCapture(string content, string tag = "script", string captureId = DefaultCaptureId, int? priority = null, bool? allowMerge = null, params (string name, string value)[] attrs)
         {
             var defaultTags = new[] { new TagHelperAttribute("capture", captureId) };
-            var allAttrs = new TagHelperAttributeList(defaultTags.Concat(attrs.Select(a => new TagHelperAttribute(a.name, a.value))));
+            var allAttrs = new TagHelperAttributeList(defaultTags.Concat(attrs.Select(a => new TagHelperAttribute(a.name, new HtmlString(a.value)))));
             var output = new TagHelperOutput(tag, allAttrs, (r, e) => Task.FromResult(new DefaultTagHelperContent().SetHtmlContent(content)));
 
             var captureTag = new CaptureTagHelper
