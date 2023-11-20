@@ -35,7 +35,7 @@ class Build : NukeBuild
     
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
-    [NerdbankGitVersioning] readonly NerdbankGitVersioning GitVersion;
+    [GitVersion] readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath TestsDirectory => RootDirectory / "tests";
@@ -64,9 +64,9 @@ class Build : NukeBuild
             DotNetBuild(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
-                .SetAssemblyVersion(GitVersion.SimpleVersion)
-                .SetFileVersion(GitVersion.SimpleVersion)
-                .SetInformationalVersion(GitVersion.SimpleVersion)
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer)
+                .SetInformationalVersion(GitVersion.InformationalVersion)
                 .EnableNoRestore());
         });
 
